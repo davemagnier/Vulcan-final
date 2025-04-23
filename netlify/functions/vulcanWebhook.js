@@ -1,3 +1,7 @@
+const fetch = require("node-fetch");
+
+const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1364736685690064966/CMsYAZc2EX1PNMaFs8FnIlGb2tGrIQ4GXtsoKcYc2i94XZS-4raVPmc35zkiVU9dhy_r";
+
 exports.handler = async (event) => {
   try {
     const body = JSON.parse(event.body);
@@ -15,6 +19,14 @@ exports.handler = async (event) => {
     }
 
     if (bannedWallets.includes(wallet)) {
+      await fetch(DISCORD_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          content: `🔒 Blocked wallet tried to verify: \`${wallet}\``
+        })
+      });
+
       return {
         statusCode: 200,
         body: JSON.stringify({ success: false })
